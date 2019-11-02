@@ -1,6 +1,8 @@
 import serial
 import time
 import io 
+import matplotlib.pyplot as plt
+import struct
 
 ser = serial.Serial(
     baudrate = 115200,
@@ -8,14 +10,20 @@ ser = serial.Serial(
 )
 '''
 issue with this code is that the port we open is going to be platform dependent.
-basically, we can only run this code on one machine. We should probably run it on my (Connor)
-computer since it took me like 5 minutes to get the port working on linux opposed to
-the over an hour I spent trying to get it to work on Michael's WSL. WSL apparenty has bugs
-in some of the serial port programs for linux.
-
-don't let me forget to turn michaels power settings back
+WSL has some strange issues regarding ports, so for now we're just going to run this on
+Connor's computer.
 '''
-#ser.open()
-ser.read(10)#reads 10 bytes from the serial input AKA the board
-
+i = 0
+while True: #will continuously read data from serial port
+    reading_bytes = ser.readline() #returns byte data type
+    print(reading_bytes)
+    reading_int = int.from_bytes(reading_bytes, byteorder='big')
+    print(str(reading_int))
+    #print('reading_str: ' + reading_str)
+    #reading_float = float(int(reading_str))
+    #print('reading_float: ' + str(reading_float))
+    #plt.scatter(i, reading_float) #cast reading to a float to plot it
+    #plt.pause(0.05) # to allow the graph to update, dont know if this will throw off timing
+    i += 1
+#plt.show()
 ser.close() 

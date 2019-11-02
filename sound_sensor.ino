@@ -19,6 +19,8 @@ void loop()
 
     sum >>= 5;
 
-    Serial.println(sum);
+    //Serial.println(sum);
+    Serial.write(sum); //writes the voltage to the serial port so python can pick it up
+    //essentially this is writing 1024 bits to serial every 10ms
     delay(10);
 }
