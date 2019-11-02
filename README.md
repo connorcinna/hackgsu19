@@ -1,0 +1,3 @@
+*Python Music Visualizer*
+
+The revolutionary aspect of this project is taking something that is, on the surface level very easy, and through the process of electrical engineering, making it much more difficult than need be. Instead of using the built in microphone on our laptops, we utilize an arduino to take in an analog input of sound in the time domain and use Fourier transformations to convert it to the frequency domain. Then, with a little Python, we take in the digital output of the Arduino into a script that based on the values received creates a GUI with pretty colors that visualizes the input audio.
