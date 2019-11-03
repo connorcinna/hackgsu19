@@ -14,9 +14,10 @@ from PyQt5 import QtWidgets
 from PyQt5.QtWidgets import QApplication, QWidget
 from PyQt5.QtGui import QPainter, QBrush, QPen, QIcon, QColor, QGuiApplication
 
-
+qp = QPainter()
 
 class HackGSU(QtWidgets.QWidget):
+    
     def __init__(self):
         super(HackGSU,self).__init__()
         self.buildUI()
@@ -25,51 +26,69 @@ class HackGSU(QtWidgets.QWidget):
         self.setWindowTitle('Music Visualizer')
         self.setStyleSheet("background-color: #333333;")
         self.show()
+        print(26)
 
-    def paintEvent(self, event, x, y):
-        qp = QPainter()
+    def paintEvent(self, event):
+        #qp = QPainter()
+        #qp.begin(self)
         qp.begin(self)
-        #x = 80
-        #y = 330
+        '''
         for i in range(32):
-            self.drawRectangles(qp, x + (i*35), y) #y should vary with voltage of the read
+            self.drawRectangles(qp, x + (i*35), y*10) #y should vary with voltage of the read
+        '''
+        self.drawRectangles(qp, x=80, y=330)
         qp.end()
 
     def drawRectangles(self,qp, x, y):
+        print(37)
+        #qp = QPainter()
+        qp.begin(self)
         col = QColor(0,0,0)
         col.setNamedColor('#d4d4d4')
         qp.setPen(col)
         qp.setBrush(QColor(50,205,50))
-        qp.drawRect(x, y, 30, 60)
-
-def serial_in(lock):
-    ser = serial.Serial(
-    baudrate = 115200,
-    port = '/dev/ttyACM0' #ports are /dev/ttyXXX on Linux, port are 'COMX' on windows
-    )
-    i = 0
-    fft_buffer = []
-    for i in range(100):
-        reading_bytes_raw = ser.readline() #returns byte data type
-        reading_str = str(reading_bytes_raw)
-        reading_str = reading_str[2:len(reading_str)-5]
-        print('reading_str: ' + reading_str)
-        if reading_str != '':
-            reading_bytes = float(reading_str) #reading from arduino in bytes (float)
-        else:
-            continue
-        print('reading_bytes: ' + str(reading_bytes))
+        '''
+        Draws 32 rectangles
+        if the rectangle that you're trying to draw is the frequency index that is being passed in from serial
+        then it erases that rectangle specifically and draws a new one with variable y value '''
+        for i in range(32):
+            qp.drawRect(x + (i*35), y, 30, 60) #y should vary with voltage of the read
+            if i == x:
+                qp.eraseRect(x + (i*35), y, 30, 720)
+                qp.drawRect(x + (i*35), y, 30, y*10)
+        qp.end()
+    def serial_in(self, qp):
+        fft_buffer = []
+        x = 80
+        y = 330
+        ser = serial.Serial(
+        baudrate = 115200,
+        port = '/dev/ttyACM0' #ports are /dev/ttyXXX on Linux, port are 'COMX' on windows
+        )
+        i = 0
+        for i in range(100):
+            reading_bytes_raw = ser.readline() #returns byte data type
+            reading_str = str(reading_bytes_raw)
+            reading_str = reading_str[2:len(reading_str)-5]
+            if reading_str != '':
+                reading_bytes = float(reading_str) #reading from arduino in bytes (float)
+            else:
+                continue
         reading_voltage = reading_bytes * 0.0049 #reading from arduino in volts
         fft_buffer.append(reading_voltage)
-    ser.close()
-    print(fft_buffer)
-    print('length of fft_buffer: ' + str(len(fft_buffer)))
-    fft_buffer = numpy.array(fft_buffer)
-    f, t, sxx = signal.spectrogram(fft_buffer, 9600.0)
-    lock.acquire()
-    update_counters(f)
-    paintEvent()
-    lock.release()
+        ser.close()
+        print(fft_buffer)
+        fft_buffer = numpy.array(fft_buffer)
+        f, t, sxx = signal.spectrogram(fft_buffer, 9600.0)
+    #   lock.acquire()
+        update_counters(f)
+        qp.begin(self)
+        qp.eraseRect(0,0,1280,720)
+        for count in counters:
+            print('count: ' + str(count))
+            self.drawRectangles(qp, x, count)
+        qp.end()
+#    lock.release()
 
 def update_counters(freqs):
     for i in freqs:
@@ -135,17 +154,20 @@ def update_counters(freqs):
             counters[2] += 1
         elif i > 20:
             counters[1] += 1
-        else
+        else:
             counters[0] += 1
 
-lock = threading.Lock()
-t_serial = threading.Thread(target=serial_in, args=(lock,))
+#lock = threading.Lock()
+#t_serial = threading.Thread(target=serial_in, args=(lock,))
 while 1:
     if __name__ == '__main__':
         counters = [0] * 32
         app = QApplication(sys.argv)
+        print(157)
         ex = HackGSU()
-        t_serial.start()
-        t_serial.join()
+        ex.serial_in(qp)
+ #       t_serial.start()
+        #t_serial.join()
+        print(160)
         app.exec_()
     
