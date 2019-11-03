@@ -8,6 +8,7 @@ from PyQt5 import QtWidgets
 from PyQt5.QtWidgets import QApplication, QWidget
 from PyQt5.QtGui import QPainter, QBrush, QPen 
 from PyQt5.QtGui import QIcon, QColor
+import qtpy_test
 #from PyQt5.QtCore import Qt
 
 
@@ -33,6 +34,7 @@ class HackGSU(QtWidgets.QWidget):
     def initUI(self):
         self.setGeometry(200, 200, 1280, 720)
         self.setWindowTitle('Music Visualizer')
+        self.setStyleSheet("background-color: #333333;")
         self.show()
 
     def paintEvent(self, event):
@@ -48,13 +50,12 @@ class HackGSU(QtWidgets.QWidget):
         col = QColor(0,0,0)
         col.setNamedColor('#d4d4d4')
         qp.setPen(col)
-        qp.setBrush(QColor(200,0,0))
+        qp.setBrush(QColor(50,205,50))
         qp.drawRect(x, y, 30, 60)
 
-    def getData(self):
-        
+
 
 if __name__ == '__main__':
-        app = QApplication(sys.argv)
-        ex = HackGSU()
-        sys.exit(app.exec_())
+    app = QApplication(sys.argv)
+    ex = HackGSU()
+    sys.exit(app.exec_())

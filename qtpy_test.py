@@ -1,23 +1,25 @@
 import io
-import time
-import struct 
+#import time
+#import struct 
 import numpy
-import sys
+#import sys
 import threading
-from PyQt5.QtWidgets import QApplication, QWidget
+#from PyQt5.QtWidgets import QApplication, QWidget
 from PyQt5 import QtGui
-from PyQt5.QtGui import QPainter, QBrush, QPen 
+#from PyQt5.QtGui import QPainter, QBrush, QPen 
 from PyQt5.QtCore import Qt
+from serial_test import HackGSU
 
 line = ''
-
+'''
 def gui(lock):
     my_app = QApplication(sys.argv)
     w=QWidget()
     w.setWindowTitle('Visualization')
     w.show()
     sys.exit(my_app.exec_())
-
+    '''
+ex = HackGSU()
 def calculation(lock):
     print(line)
     line = float(line)
@@ -26,7 +28,7 @@ def calculation(lock):
 # read data from file (board doesn't work with this computer)
 mic_data = open("output.txt",'r')
 lock = threading.Lock()
-t1 = threading.Thread(target=gui, args=(lock,))
+t1 = threading.Thread(target=ex.initUI)
 t2 = threading.Thread(target=calculation, args=(lock,))
 
 # start threads
