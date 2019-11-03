@@ -28,7 +28,7 @@ class HackGSU(QtWidgets.QWidget):
         self.show()
         print(26)
 
-    def paintEvent(self, event):
+    def paintEvent(self, event): #This should be called whenever any drawing has to happen, or so it says -Brendon
         #qp = QPainter()
         #qp.begin(self)
         qp.begin(self)
@@ -52,7 +52,9 @@ class HackGSU(QtWidgets.QWidget):
         if the rectangle that you're trying to draw is the frequency index that is being passed in from serial
         then it erases that rectangle specifically and draws a new one with variable y value '''
         for i in range(32):
+            qp.begin(self)
             qp.drawRect(x + (i*35), y, 30, 60) #y should vary with voltage of the read
+            qp.end()
             if i == x:
                 qp.eraseRect(x + (i*35), y, 30, 720)
                 qp.drawRect(x + (i*35), y, 30, y*10)
@@ -83,10 +85,10 @@ class HackGSU(QtWidgets.QWidget):
     #   lock.acquire()
         update_counters(f)
         qp.begin(self)
-        qp.eraseRect(0,0,1280,720)
+        qp.eraseRect(0,0,1280,720) #Clear All
         for count in counters:
             print('count: ' + str(count))
-            self.drawRectangles(qp, x, count)
+            self.drawRectangles(qp, x, count) #Brendon: If we just use drawRectangles, whats the point of creating a painterEvent when we just skip it.
         qp.end()
 #    lock.release()
 
@@ -164,8 +166,8 @@ while 1:
         counters = [0] * 32
         app = QApplication(sys.argv)
         print(157)
-        ex = HackGSU()
-        ex.serial_in(qp)
+        ex = HackGSU() #Creating an instance of the class we just made
+        ex.serial_in(qp) #Going ahed to start the class because serial_in should be theo nly thing to be called manually in main
  #       t_serial.start()
         #t_serial.join()
         print(160)
