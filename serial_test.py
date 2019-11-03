@@ -8,9 +8,6 @@ from PyQt5 import QtWidgets
 from PyQt5.QtWidgets import QApplication, QWidget
 from PyQt5.QtGui import QPainter, QBrush, QPen 
 from PyQt5.QtGui import QIcon, QColor
-import qtpy_test
-#from PyQt5.QtCore import Qt
-
 
 class HackGSU(QtWidgets.QWidget):
     def serial(self):
@@ -54,8 +51,7 @@ class HackGSU(QtWidgets.QWidget):
         qp.drawRect(x, y, 30, 60)
 
 
-
 if __name__ == '__main__':
-    app = QApplication(sys.argv)
+    app = QtWidgets.QApplication(sys.argv)
     ex = HackGSU()
     sys.exit(app.exec_())

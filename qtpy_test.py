@@ -1,12 +1,7 @@
 import io
-#import time
-#import struct 
 import numpy
-#import sys
 import threading
-#from PyQt5.QtWidgets import QApplication, QWidget
 from PyQt5 import QtGui
-#from PyQt5.QtGui import QPainter, QBrush, QPen 
 from PyQt5.QtCore import Qt
 from serial_test import HackGSU
 
